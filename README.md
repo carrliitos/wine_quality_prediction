@@ -1,17 +1,14 @@
-In the opening paragraph, introduce the purpose of this project code.
+The purpose of this project is to practice data mining and statistical learning using the public wine dataset. More 
+specifically, in this project, I create a predictive model on the quality of red wine based on chemical properties of 
+wine.
 
-Each project should have a README file that orients anyone else to the project. Minimally, each project should have a 
-section titled "Execution" that describes how to execute the entire project including any dependency as well as section 
-titled "Structure" that describes where work can be found and should be peristed. Additionally, each data project in R 
-should be committed to a git repository.
+The following analytical approaches are taken:
 
-We should prefer to do most of our work in [notebooks](https://bookdown.org/yihui/rmarkdown/notebook.html) which can 
-produce a human-readable (read as not overly technical) document for other members of a study or project team. Notebooks 
-contain code chunks which are executable and render datasets or other outputs immediately below. A narrative describing 
-the work being done as well as the reason for the work can logically accompany the code chunks. Significant or overly 
-complex R code should be placed in the `R` folder. That code can be called in a notebook by first specifying 
-`source("name of the file.R")` and then calling relevant functions. Code contained in the `R` folders should, if 
-reasonable, include automated test cases.
+* Multiple regression: the *Quality* response is assumed to be a continuous variable and is predicted by the independent 
+predictors, all of which are continuous.
+* Regression Tree
+* Classification of wines based on the chemical properties: Unsupervised analysis
+* Classification of wines based on the chemical properties: K-nearest neighbors classification
 
 ## Execution
 To execute, run the below commands:
