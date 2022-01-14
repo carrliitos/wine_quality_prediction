@@ -14,12 +14,7 @@ predictors, all of which are continuous.
 To execute, run the below commands:
 
 ```{r}
-rmarkdown::render(
-  "notebooks/execute.Rmd",
-  output_format = "html_document",
-  output_file = here::here("output", paste0(basename(getwd()), ".html")),
-  envir = new.env()
-)
+rstudioapi::jobRunScript("execute.R")
 ```
 
 ## Structure

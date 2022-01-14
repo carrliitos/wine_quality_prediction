@@ -1,11 +1,30 @@
 ---
-title: "Project Name"
-output: html_notebook
+title: "Wine Quality Prediction Project"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  pdf_document:
+    df_print: kable
+  html_notebook:
+    code_folding: hide
+    df_print: paged
+    toc: yes
 ---
 
-```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+```{r main_setup, include = FALSE}
+options(knitr.duplicate.label = "allow")
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This file should be considered the notebook required to execute all of your work. Document your process and rationale along with your code. This document should be able to be distributed to and understandable by less technical individuals.
+```{r chunk_setup, include = FALSE}
+files <- list.files(pattern = "\\d+.*\\.Rmd", recursive = TRUE)
+chunks <- paste0('```{r child = "', files, '"}\n```\n')
+cat(chunks, sep = "\n")
+```
 
-In your code, always include package names when referencing function (e.g. `dplyr::mutate(...)` instead of `mutate(...)`).
+```{r child = 00_data_prep.Rmd}
+```
+
+```{r child = 01_eda_and_preprocessing.Rmd}
+```
