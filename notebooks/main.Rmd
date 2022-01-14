@@ -1,0 +1,11 @@
+---
+title: "Project Name"
+output: html_notebook
+---
+
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+```
+
+This file should be considered the notebook required to execute all of your work. Document your process and rationale along with your code. This document should be able to be distributed to and understandable by less technical individuals.
+
+In your code, always include package names when referencing function (e.g. `dplyr::mutate(...)` instead of `mutate(...)`).

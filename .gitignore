@@ -1,0 +1,28 @@
+################################################################################
+#                                                                              #
+# Project Defaults                                                             #
+#                                                                              #
+################################################################################
+# R defaults
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Ignore any rendered RMarkdown file to protect any PHI
+notebooks/*.html
+reports/*.html
+*.nb.html
+
+# Ignore any RMarkdown cache file
+notebooks/*_cache
+reports/*_cache
+
+# Ignore the configuration file to protect any secrets
+config.yml
+
+################################################################################
+#                                                                              #
+# Project-specific Settings                                                    #
+#                                                                              #
+################################################################################

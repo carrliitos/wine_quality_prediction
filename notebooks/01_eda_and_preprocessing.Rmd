@@ -1,0 +1,187 @@
+---
+title: "Exploratory Data Analysis and Data Preprocessing"
+author: "Benzon Carlitos Salazar"
+date: "1/13/2022"
+output: html_document
+---
+
+```{r setup, message = FALSE, warning = FALSE, include = FALSE}
+library(magrittr)
+
+red_wine <- readRDS(here::here("data", "red_wine_dataset.rds"))
+attach(red_wine)
+```
+
+# Exploratory Data Analysis and Data Preprocessing
+All red wine data set variables are summarized and univariate analysis with plots are shown.
+
+## Histograms
+We start with histograms to show the distribution of the variable values.
+```{r histograms, echo=FALSE}
+graphics::par(mfrow = c(2,2), oma = c(1, 1, 0, 0) + 0.1, mar = c(3, 3, 1, 1) + 0.1)
+
+# Quality
+graphics::barplot((table(quality)), 
+                  col=c("slateblue4", "slategray", "slategray1", "slategray2", "slategray3", "skyblue4"))
+graphics::mtext("Quality", side = 1, outer = F, line = 2, cex = 0.8)
+
+# Fixed Acidity
+MASS::truehist(fixed_acidity, h = 0.5, col = "slategray3")
+graphics::mtext("Fixed Acidity", side = 1, outer = F, line = 2, cex = 0.8)
+
+# Volatile Acidity
+MASS::truehist(volatile_acidity, h = 0.5, col = "slategray3")
+graphics::mtext("Volatile Acidity", side = 1, outer = F, line = 2, cex = 0.8)
+
+# Citric Acid
+MASS::truehist(citric_acid, h = 0.5, col = "slategray3")
+graphics::mtext("Citric Acid", side = 1, outer = F, line = 2, cex = 0.8)
+
+# Residual Sugar
+MASS::truehist(residual_sugar, h = 0.5, col = "slategray3")
+graphics::mtext("Residual Sugar", side = 1, outer = F, line = 2, cex = 0.8)
+
+# Chlorides
+MASS::truehist(chlorides, h = 0.5, col = "slategray3")
+graphics::mtext("Chlorides", side = 1, outer = F, line = 2, cex = 0.8)
+
+# Free Sulfur Dioxide
+MASS::truehist(free_sulfur_dioxide, h = 0.5, col = "slategray3")
+graphics::mtext("Free Sulfur Dioxide", side = 1, outer = F, line = 2, cex = 0.8)
+
+# Total Sulfur Dioxide
+MASS::truehist(total_sulfur_dioxide, h = 0.5, col = "slategray3")
+graphics::mtext("Total Sulfur Dioxide", side = 1, outer = F, line = 2, cex = 0.8)
+
+# Density
+MASS::truehist(density, h = 0.5, col = "slategray3")
+graphics::mtext("Density", side = 1, outer = F, line = 2, cex = 0.8)
+
+# pH
+MASS::truehist(ph, h = 0.5, col = "slategray3")
+graphics::mtext("pH", side = 1, outer = F, line = 2, cex = 0.8)
+
+# Sulphates
+MASS::truehist(sulphates, h = 0.5, col = "slategray3")
+graphics::mtext("Sulphates", side = 1, outer = F, line = 2, cex = 0.8)
+
+# Alcohol
+MASS::truehist(alcohol, h = 0.5, col = "slategray3")
+graphics::mtext("Alcohol", side = 1, outer = F, line = 2, cex = 0.8)
+```
+
+## Boxplots
+We also utilize boxplots to get a different view of the spread.
+```{r boxplots, echo=FALSE}
+graphics::par(mfrow = c(1, 5), oma = c(1, 1, 0, 0) + 0.1,  mar = c(3, 3, 1, 1) + 0.1)
+
+# Quality
+graphics::boxplot((table(quality)), 
+                  col=c("slateblue4", "slategray", "slategray1", "slategray2", "slategray3", "skyblue4"),
+                  pch = 19)
+graphics::mtext("Quality", side = 1, line = 2, cex = 0.8)
+
+# Fixed Acidity
+graphics::boxplot(fixed_acidity, col = "slategray3", pch = 19)
+graphics::mtext("Fixed Acidity", side = 1, line = 2, cex = 0.8)
+
+# Volatile Acidity
+graphics::boxplot(volatile_acidity, col = "slategray3", pch = 19)
+graphics::mtext("Volatile Acidity", side = 1, line = 2, cex = 0.8)
+
+# Citric Acid
+graphics::boxplot(citric_acid, col = "slategray3", pch = 19)
+graphics::mtext("Citric Acid", side = 1, line = 2, cex = 0.8)
+
+# Residual Sugar
+graphics::boxplot(residual_sugar, col = "slategray3", pch = 19)
+graphics::mtext("Residual Sugar", side = 1, line = 2, cex = 0.8)
+
+# Chlorides
+graphics::boxplot(chlorides, col = "slategray3", pch = 19)
+graphics::mtext("Chlorides", side = 1, line = 2, cex = 0.8)
+
+# Free Sulfur Dioxide
+graphics::boxplot(free_sulfur_dioxide, col = "slategray3", pch = 19)
+graphics::mtext("Free Sulfur Dioxide", side = 1, line = 2, cex = 0.8)
+
+# Total Sulfur Dioxide
+graphics::boxplot(total_sulfur_dioxide, col = "slategray3", pch = 19)
+graphics::mtext("Total Sulfur Dioxide", side = 1, line = 2, cex = 0.8)
+
+# Density
+graphics::boxplot(density, col = "slategray3", pch = 19)
+graphics::mtext("Density", side = 1, line = 2, cex = 0.8)
+
+# pH
+graphics::boxplot(ph, col = "slategray3", pch = 19)
+graphics::mtext("pH", side = 1, line = 2, cex = 0.8)
+
+# Sulphates
+graphics::boxplot(sulphates, col = "slategray3", pch = 19)
+graphics::mtext("Sulphates", side = 1, line = 2, cex = 0.8)
+
+# Alcohol
+graphics::boxplot(alcohol, col = "slategray3", pch = 19)
+graphics::mtext("Alcohol", side = 1, line = 2, cex = 0.8)
+```
+
+## Observations
+Main observation is that all variables contain outliers.
+
+* Based on the histogram for `Quality`, the most concentrated values are in [5, 6, 7]. Only a small proportion in in 
+categories [3, 4, 8], and none in [1, 2, 9].
+* `Fixed Acidity`, `Volatile Acidity`, `Citric Acid` all have outliers. If those outliers are eliminated, the 
+distribution of the variables may take a more symmetric form.
+* `Residual Sugar` has a positively skewed distribution. This distribution will remain true regardless of whether the 
+outliers are removed.
+* Most of the outliers are on the larger side.
+* `Alcohol` shows an irregularly shaped distribution, but these outliers are not as pronounced as the others.
+
+# Summary Statistics and Correlations
+For this section, we utilize the `psych` package. It is a general purpose toolbox for experimental psychology. However, 
+we are more so interested in the package's functions for multivariate analyses and scale construction using various 
+analysis. For more information, visit [CRAN - Package psych](https://cran.r-project.org/web/packages/psych/index.html).
+
+The observations with `psych::describe()` correlates with summary statistics.
+```{r summary_stats}
+summary(red_wine)
+psych::describe(red_wine)
+```
+* Range is much larger compared to IQR.
+* Mean is usually greater than the median.
+
+These observations solidifies the existence of outliers, thus before any analysis is performed, the outliers must be 
+taken care of.
+
+Next, we look at bivariate analysis, including all pairwise scatterplot and correlation coefficients. Since our 
+observations indicate a non-normal distribution, we consider using the Pearson correlation and Spearman Rank 
+correlation.
+
+### Table: Pearson's Correlation
+```{r pearson_correlation}
+stats::cor(red_wine[, -12])
+```
+### Table: Spearman Rank Correlation
+```{r spearman_rank}
+stats::cor(red_wine[, -12], method = "spearman")
+```
+Pearson's correlation and Spearman Rank correlations are relatively close, thus we consider the former. High 
+correlations (>= 40% in absolute values) exists in the following variables in the Pearson Correlation table:
+
+* `Total Sulfur Dioxide`
+* `Density`
+* `pH`
+* `Alcohol`
+
+### Scatterplot of predictors
+```{r scatterplor}
+graphics::pairs(red_wine[, -12], gap = 0, pch = 19, cex = 0.4, col = "darkblue")
+title(sub = "Scatterplot of chemical attributes", cex = 0.8)
+```
+
+```{r clean_up, include = FALSE}
+detach(red_wine)
+rm(list = ls(all.names = TRUE)) # clear all objects including hidden objects
+invisible(gc()) # free up memory
+```

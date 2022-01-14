@@ -1,0 +1,43 @@
+---
+title: "Data preparation and Objectives"
+author: "Benzon Carlitos Salazar"
+date: "1/8/2022"
+output: pdf_document
+---
+
+```{r setup, message = FALSE, warning = FALSE, include = FALSE}
+library(magrittr)
+
+red_wine_dataset <- read.csv(here::here("data-raw", "winequality-red.csv"), header = TRUE, sep = ";")
+```
+
+# Save to R dataframe
+```{r clean_and_save}
+red_col_list <-
+  colnames(red_wine_dataset[1:11]) %<>%
+  gsub("[[:punct:]]", "_", .) %>%
+  gsub("[[:space:]]", "_", .)
+
+renamed_red_wine <-
+  paste0(tolower(red_col_list))
+  
+red_wine_dataset %>%
+  dplyr::rename_at(1:11, ~renamed_red_wine) %>%
+  saveRDS(here::here("data", "red_wine_dataset.rds"))
+```
+
+# Objectives
+We want to make a predictive model on the quality of **red wine** based on chemical properties of wine.
+
+The following analytical approaches are taken:
+
+* Multiple regression: the *Quality* response is assumed to be a continuous variable and is predicted by the independent 
+predictors, all of which are continuous.
+* Regression Tree
+* Classification of wines based on the chemical properties: Unsupervised analysis
+* Classification of wines based on the chemical properties: K-nearest neighbors classification
+
+```{r clean_up, include = FALSE}
+rm(list = ls(all.names = TRUE)) # clear all objects including hidden objects
+invisible(gc()) # free up memory
+```
