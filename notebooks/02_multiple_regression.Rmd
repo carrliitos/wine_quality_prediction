@@ -1,0 +1,135 @@
+---
+title: "Multiple Regression"
+author: "Benzon Carlitos Salazar"
+date: "1/15/2022"
+output: html_document
+---
+
+```{r setup, message = FALSE, warning = FALSE, include = FALSE}
+library(magrittr)
+
+white_wine <- readRDS(here::here("data", "white_wine_dataset.rds"))
+white_wine_train <- readRDS(here::here("data", "white_wine_train.rds"))
+white_wine_test <- readRDS(here::here("data", "white_wine_test.rds"))
+attach(white_wine)
+```
+
+# Looking for our model
+Linear Regression is fitted to the training data.
+
+We also look at the Variance Inflation Factor (VIF) to detect multicollinearity in regression analysis. 
+Multicollinearity is when there's correlation between predictors in a model; it's presence can adveresly affect the 
+regression results. The VIF estimates how much the variance of a regression coefficient is inflated due to 
+multicollinearity in the model.
+
+## Model 1: All predictors
+```{r model_1}
+fitness_1 <- stats::lm(quality ~ ., data = white_wine_train)
+summary(fitness_1)
+regclass::VIF(fitness_1)
+```
+For extremely high VIF, `density` is removed from the model. There are other predictors with high VIF, but they are not 
+removed from the model.
+
+## Model 2: After removal of density VIFs improved
+```{r model_2}
+fitness_2 <- stats::step(stats::lm(quality ~ 1, white_wine_train), 
+                         scope = list(lower = ~ 1,
+                                      upper = ~ fixed_acidity + volatile_acidity + citric_acid + residual_sugar 
+                                      + chlorides + free_sulfur_dioxide + ph + sulphates + alcohol), 
+                         direction = "forward")
+summary(fitness_2)
+regclass::VIF(fitness_2)
+```
+
+Not all predictors are significant. A forward selection method is employed to build a working model.
+
+## Model 3: Working model
+```{r model_3}
+fitness_3 <- stats::lm(quality ~ alcohol + volatile_acidity + residual_sugar + free_sulfur_dioxide + sulphates
+                       + chlorides + ph, data = white_wine_train)
+summary(fitness_3)
+regclass::VIF(fitness_3)
+```
+
+The multiple **R^2^** is *22%*. Regression diagnostics are examined for possible improvement of the model.
+```{r regression_diagnostics}
+graphics::par(mfrow = c(1, 2), oma = c(3, 2, 3, 2) + 0.1, mar = c(1, 1, 1, 1) + 0.1)
+MASS::truehist(stats::residuals(fitness_3), h = 0.25, col = "slategray3")
+
+# quantile-comparison plot
+car::qqPlot(stats::residuals(fitness_3), pch = 19, col = "darkblue", cex = 0.6, ylab = "Fitness 3 residuals")
+graphics::mtext("Distribution of residuals", outer = T, side = 1, line = 2)
+graphics::par(mfrow = c(1, 1))
+```
+
+Residuals have an approximately symmetric distribution but there seems to be outliers at both ends. Partial residual 
+plots are examined. 
+Note the patterns in the fitted value plot. Since the response actually takes only integer values but has been assumed 
+to be continuous, such pattern arises.
+```{r pearson_residuals}
+# Pearson residuals
+car::residualPlots(fitness_3, pch = 19, col = "blue", cex = 0.6)
+```
+
+We also investigate the Box-Cox plot
+```{r box_cox}
+MASS::boxcox(stats::lm(quality ~ alcohol), 
+             data = white_wine_train, lambda = seq(-0.2, 1.0, len = 20), 
+             plotit = T)
+```
+
+Outliers and leverage points are identified through the following:
+
+* Studentized deleted residuals - a point is an outlier if residual is outside of [-3, 3] limits
+* DFITS - a point is an outlier if residual is outside of [-1, 1] limits
+* Cook's Distance
+
+```{r studentized_residuals}
+studentized_deleted_residuals <- MASS::studres(fitness_3)
+MASS::truehist(studentized_deleted_residuals, h = 0.25, col = "slategray3")
+graphics::mtext("Histogram of Studentized Deleted Residuals", side = 1, line = 2, cex = 0.8)
+
+# Larger bin width
+graphics::par(mfrow=c(1,2), oma = c(3,2,3,2) + 0.1, mar = c(1,1,1,1) + 0.1)
+MASS::truehist(studentized_deleted_residuals, h = 0.55, col = "slategray3")
+graphics::mtext("Studentized deleted residuals", side = 1, line = 2, cex = 0.8)
+```
+
+```{r deletion_fits}
+deletion_fits <- stats::dffits(fitness_3)
+MASS::truehist(deletion_fits, h = 0.25, col = "slategray3")
+graphics::mtext("Histogram of Studentized Deleted Residuals", side = 1, line = 2, cex = 0.8)
+
+# Smaller bin width
+MASS::truehist(deletion_fits, h = 0.05, col = "slategray3")
+graphics::mtext("DFITS", side = 1, line = 2, cex = 0.8)
+```
+
+No point is an outlier with the DFITS value.
+
+```{r cooks_distance}
+cooks_dist <- stats::cooks.distance(fitness_3)
+graphics::par(mfrow=c(1,1), oma = c(3,2,3,2) + 0.1, mar = c(1,1,1,1) + 0.1)
+stats::ts.plot(cooks_dist, col = "dark blue")
+```
+
+## Final Model
+Only 26 points are identified as outliers according to the above criteria. A final model is fit after eliminating these 
+points.
+```{r final_model}
+final_model <- stats::lm(quality ~ stats::poly(alcohol, 2) + stats::poly(volatile_acidity, 2) + residual_sugar 
+                         + stats::poly(free_sulfur_dioxide, 2) + chlorides + sulphates + stats::poly(ph, 2),
+                         white_wine_train)
+summary(final_model)
+
+final_model %>%  
+  saveRDS(here::here("data", "white_white_model.rds"))
+```
+A slight improvement in the **R^2^** value is noted.
+
+```{r clean_up, include = FALSE}
+detach(white_wine)
+rm(list = ls(all.names = TRUE)) # clear all objects including hidden objects
+invisible(gc()) # free up memory
+```

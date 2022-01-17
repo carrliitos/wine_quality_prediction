@@ -8,12 +8,12 @@ output: html_document
 ```{r setup, message = FALSE, warning = FALSE, include = FALSE}
 library(magrittr)
 
-red_wine <- readRDS(here::here("data", "red_wine_dataset.rds"))
-attach(red_wine)
+white_wine <- readRDS(here::here("data", "white_wine_dataset.rds"))
+attach(white_wine)
 ```
 
 # Exploratory Data Analysis and Data Preprocessing
-All red wine data set variables are summarized and univariate analysis with plots are shown.
+All white wine data set variables are summarized and univariate analysis with plots are shown.
 
 ## Histograms
 We start with histograms to show the distribution of the variable values.
@@ -145,9 +145,10 @@ analysis. For more information, visit [CRAN - Package psych](https://cran.r-proj
 
 The observations with `psych::describe()` correlates with summary statistics.
 ```{r summary_stats}
-summary(red_wine)
-psych::describe(red_wine)
+summary(white_wine)
+psych::describe(white_wine)
 ```
+
 * Range is much larger compared to IQR.
 * Mean is usually greater than the median.
 
@@ -160,12 +161,14 @@ correlation.
 
 ### Table: Pearson's Correlation
 ```{r pearson_correlation}
-stats::cor(red_wine[, -12])
+stats::cor(white_wine[, -12])
 ```
+
 ### Table: Spearman Rank Correlation
 ```{r spearman_rank}
-stats::cor(red_wine[, -12], method = "spearman")
+stats::cor(white_wine[, -12], method = "spearman")
 ```
+
 Pearson's correlation and Spearman Rank correlations are relatively close, thus we consider the former. High 
 correlations (>= 40% in absolute values) exists in the following variables in the Pearson Correlation table:
 
@@ -176,12 +179,63 @@ correlations (>= 40% in absolute values) exists in the following variables in th
 
 ### Scatterplot of predictors
 ```{r scatterplor}
-graphics::pairs(red_wine[, -12], gap = 0, pch = 19, cex = 0.4, col = "darkblue")
+graphics::pairs(white_wine[, -12], gap = 0, pch = 19, cex = 0.4, col = "darkblue")
 title(sub = "Scatterplot of chemical attributes", cex = 0.8)
 ```
 
+# Data Preparation
+Possibly the most important step in data preparation is to identify outliers. Since we have a multivariate data, we 
+consider only those points which do not have any predictore variable value to be outside of limits constructed by 
+boxplots. Therefore, we apply the following rule:
+
+* A predictor value is considered to be an outlier only if it is greater than Q3 + 1.5IQR, where Q3 is the third 
+quartile and we multiple the `Inner Quartile Range` by 1.5.
+
+This is because the extreme outliers are all on the higher end of the values and the distributions are all positively 
+skewed.
+
+We then randomly divide our data into Training Data and Test Data of equal sizes (50% each).
+```{r data_preparation}
+limit_out <- rep(0, 11)
+
+for (i in 1:11) {
+  tile1 <- stats::quantile(white_wine[,i], 0.75)
+  tile2 <- stats::IQR(white_wine[,i], 0.75)
+  limit_out[i] <- tile1 + 1.5*tile2
+}
+
+WhiteWineIndex <- matrix(0, 4898, 11)
+for (i in 1:4898)
+  for (j in 1:11) {
+    if (white_wine[i, j] > limit_out[j])
+      WhiteWineIndex[i, j] <- 1
+  }
+WWInd <- apply(WhiteWineIndex, 1, sum)
+WhiteWineTemp <- cbind(WWInd, white_wine)
+Indexes <- rep(0, 208)
+j <- 1
+for (i in 1:4898) {
+  if (WWInd[i] > 0) {
+    Indexes[j] <- i
+    j <- j + 1
+  }
+  else
+    j <- j
+}
+
+WhiteWineLib <- white_wine[-Indexes, ]   # Inside of Q3+1.5IQR
+indexes = sample(1:nrow(WhiteWineLib), size = 0.5 * nrow(WhiteWineLib))
+white_wine_train <- WhiteWineLib[indexes, ]
+white_wine_test <- WhiteWineLib[-indexes, ]
+
+white_wine_train %>%
+  saveRDS(here::here("data", "white_wine_train.rds"))
+white_wine_test %>%
+  saveRDS(here::here("data", "white_wine_test.rds"))
+```
+
 ```{r clean_up, include = FALSE}
-detach(red_wine)
+detach(white_wine)
 rm(list = ls(all.names = TRUE)) # clear all objects including hidden objects
 invisible(gc()) # free up memory
 ```

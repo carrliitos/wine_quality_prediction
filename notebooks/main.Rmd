@@ -23,8 +23,14 @@ chunks <- paste0('```{r child = "', files, '"}\n```\n')
 cat(chunks, sep = "\n")
 ```
 
-```{r child = 00_data_prep.Rmd}
+```{r child = "00_data_prep.Rmd"}
 ```
 
-```{r child = 01_eda_and_preprocessing.Rmd}
+```{r child = "01_eda_and_preprocessing.Rmd"}
+```
+
+```{r child = "02_multiple_regression.Rmd"}
+```
+
+```{r child = "03_polynomial_regression.Rmd"}
 ```

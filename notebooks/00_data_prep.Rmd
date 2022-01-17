@@ -8,26 +8,26 @@ output: pdf_document
 ```{r setup, message = FALSE, warning = FALSE, include = FALSE}
 library(magrittr)
 
-red_wine_dataset <- read.csv(here::here("data-raw", "winequality-red.csv"), header = TRUE, sep = ";")
+white_wine_dataset <- read.csv(here::here("data-raw", "winequality-white.csv"), header = TRUE, sep = ";")
 ```
 
-# Save to R dataframe
+# Data Preparation
 ```{r clean_and_save}
-red_col_list <-
-  colnames(red_wine_dataset[1:11]) %<>%
+white_col_list <-
+  colnames(white_wine_dataset[1:11]) %<>%
   gsub("[[:punct:]]", "_", .) %>%
   gsub("[[:space:]]", "_", .)
 
-renamed_red_wine <-
-  paste0(tolower(red_col_list))
+renamed_white_wine <-
+  paste0(tolower(white_col_list))
   
-red_wine_dataset %>%
-  dplyr::rename_at(1:11, ~renamed_red_wine) %>%
-  saveRDS(here::here("data", "red_wine_dataset.rds"))
+white_wine_dataset %>%
+  dplyr::rename_at(1:11, ~renamed_white_wine) %>%
+  saveRDS(here::here("data", "white_wine_dataset.rds"))
 ```
 
 # Objectives
-We want to make a predictive model on the quality of **red wine** based on chemical properties of wine.
+We want to make a predictive model on the quality of **white wine** based on chemical properties of wine.
 
 The following analytical approaches are taken:
 

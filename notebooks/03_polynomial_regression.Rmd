@@ -1,0 +1,30 @@
+---
+title: "Application of Polynomial Regression"
+author: "Benzon Carlitos Salazar"
+date: "1/15/2022"
+output: html_document
+---
+
+```{r setup, message = FALSE, warning = FALSE, include = FALSE}
+library(magrittr)
+
+white_wine <- readRDS(here::here("data", "white_wine_dataset.rds"))
+white_wine_train <- readRDS(here::here("data", "white_wine_train.rds"))
+white_wine_test <- readRDS(here::here("data", "white_wine_test.rds"))
+final_model <- readRDS(here::here("data", "white_white_model.rds"))
+attach(white_wine)
+```
+
+# Application of Model to Test Data
+We apply our model to the test data.
+
+```{r prediction}
+prediction <- stats::predict(final_model, white_wine_test)
+summary(prediction)
+```
+
+```{r clean_up, include = FALSE}
+detach(white_wine)
+rm(list = ls(all.names = TRUE)) # clear all objects including hidden objects
+invisible(gc()) # free up memory
+```
