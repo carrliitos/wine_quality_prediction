@@ -33,10 +33,13 @@ removed from the model.
 
 ## Model 2: After removal of density VIFs improved
 ```{r model_2}
-fitness_2 <- stats::step(stats::lm(quality ~ 1, white_wine_train), 
+fitness_2 <- 
+  stats::step(stats::lm(quality ~ 1, white_wine_train), 
                          scope = list(lower = ~ 1,
-                                      upper = ~ fixed_acidity + volatile_acidity + citric_acid + residual_sugar 
-                                      + chlorides + free_sulfur_dioxide + ph + sulphates + alcohol), 
+                                      upper = ~ fixed_acidity + 
+                                        volatile_acidity + citric_acid + residual_sugar + 
+                                        chlorides + free_sulfur_dioxide + ph + sulphates + 
+                                        alcohol), 
                          direction = "forward")
 summary(fitness_2)
 regclass::VIF(fitness_2)
@@ -46,8 +49,9 @@ Not all predictors are significant. A forward selection method is employed to bu
 
 ## Model 3: Working model
 ```{r model_3}
-fitness_3 <- stats::lm(quality ~ alcohol + volatile_acidity + residual_sugar + free_sulfur_dioxide + sulphates
-                       + chlorides + ph, data = white_wine_train)
+fitness_3 <- 
+  stats::lm(quality ~ alcohol + volatile_acidity + residual_sugar + free_sulfur_dioxide + 
+              sulphates + chlorides + ph, data = white_wine_train)
 summary(fitness_3)
 regclass::VIF(fitness_3)
 ```
@@ -58,7 +62,11 @@ graphics::par(mfrow = c(1, 2), oma = c(3, 2, 3, 2) + 0.1, mar = c(1, 1, 1, 1) + 
 MASS::truehist(stats::residuals(fitness_3), h = 0.25, col = "slategray3")
 
 # quantile-comparison plot
-car::qqPlot(stats::residuals(fitness_3), pch = 19, col = "darkblue", cex = 0.6, ylab = "Fitness 3 residuals")
+car::qqPlot(stats::residuals(fitness_3), 
+            pch = 19, 
+            col = "darkblue", 
+            cex = 0.6, 
+            ylab = "Fitness 3 residuals")
 graphics::mtext("Distribution of residuals", outer = T, side = 1, line = 2)
 graphics::par(mfrow = c(1, 1))
 ```
