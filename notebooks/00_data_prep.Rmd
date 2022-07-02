@@ -8,7 +8,9 @@ output: html_document
 ```{r setup}
 library(magrittr)
 
-white_wine_dataset <- read.csv(here::here("data-raw", "winequality-white.csv"), header = TRUE, sep = ";")
+white_wine_dataset <- read.csv(here::here("data-raw", "winequality-white.csv"), 
+                               header = TRUE, 
+                               sep = ";")
 ```
 
 # Data Preparation
