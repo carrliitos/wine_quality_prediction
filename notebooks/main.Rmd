@@ -2,14 +2,13 @@
 title: "Wine Quality Prediction Project"
 output:
   html_document:
-    toc: yes
+    code_folding: show
+    toc: TRUE
     df_print: paged
+    toc_float: TRUE
+    theme: cosmo
   pdf_document:
     df_print: kable
-  html_notebook:
-    code_folding: hide
-    df_print: paged
-    toc: yes
 ---
 
 ```{r main_setup, include = FALSE}
@@ -22,6 +21,12 @@ files <- list.files(pattern = "\\d+.*\\.Rmd", recursive = TRUE)
 chunks <- paste0('```{r child = "', files, '"}\n```\n')
 cat(chunks, sep = "\n")
 ```
+
+# Project Overview
+
+The purpose of this project is to practice data mining and statistical learning using the public wine dataset. More 
+specifically, in this project, I create a predictive model on the quality of red wine based on chemical properties of 
+wine.
 
 ```{r child = "00_data_prep.Rmd"}
 ```
