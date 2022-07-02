@@ -5,7 +5,7 @@ date: "1/8/2022"
 output: html_document
 ---
 
-```{r setup, message = FALSE, warning = FALSE, include = FALSE}
+```{r setup}
 library(magrittr)
 
 white_wine_dataset <- read.csv(here::here("data-raw", "winequality-white.csv"), header = TRUE, sep = ";")
